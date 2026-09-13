@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>الصفحة غير موجودة | خشبيكو</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%233E2723'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .error-page{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:40px 24px;position:relative;overflow:hidden;
+  }
+  .error-rings{position:absolute;top:50%;right:50%;transform:translate(50%,-50%);width:520px;height:520px;pointer-events:none;}
+  .error-content{position:relative;max-width:480px;}
+  .error-code{font-family:'El Messiri',serif;font-size:5rem;color:var(--oak);margin:0;}
+</style>
+</head>
+<body>
+  <div class="error-page">
+    <div class="error-rings" aria-hidden="true">
+      <svg viewBox="0 0 600 600" width="100%" height="100%">
+        <circle cx="300" cy="300" r="280" fill="none" stroke="#C9A876" stroke-opacity="0.18" stroke-width="2"/>
+        <circle cx="300" cy="300" r="200" fill="none" stroke="#C9A876" stroke-opacity="0.24" stroke-width="2"/>
+        <circle cx="300" cy="300" r="120" fill="none" stroke="#C9A876" stroke-opacity="0.32" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="error-content">
+      <p class="error-code">404</p>
+      <h1>الصفحة اللي بتدور عليها مش موجودة</h1>
+      <p>ممكن الرابط يكون اتغيّر أو الصفحة اتشالت. ارجع للرئيسية وتصفّح منتجاتنا.</p>
+      <a href="/" class="btn btn-primary">العودة للرئيسية</a>
+    </div>
+  </div>
+</body>
+</html>

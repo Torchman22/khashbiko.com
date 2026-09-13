@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>تفاصيل المنتج | خشبيكو</title>
+<meta name="description" content="تفاصيل المنتج في متجر خشبيكو — مصنوعات خشبية يدوية من خشب طبيعي 100%.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%233E2723'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="pd-body">
+
+<!-- ===== Header (نفس هيدر الصفحة الرئيسية) ===== -->
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <svg class="logo-rings" viewBox="0 0 60 60" width="42" height="42" aria-hidden="true">
+        <circle cx="30" cy="30" r="27" fill="#3E2723"/>
+        <circle cx="30" cy="30" r="20" fill="none" stroke="#C9A876" stroke-width="2"/>
+        <circle cx="30" cy="30" r="13" fill="none" stroke="#C9A876" stroke-width="2"/>
+        <circle cx="30" cy="30" r="6" fill="#C9A876"/>
+      </svg>
+      <span class="logo-text">خشبيكو<small>KHASHBIKO</small></span>
+    </a>
+
+    <nav class="main-nav" id="mainNav">
+      <div class="nav-panel-header">
+        <span class="logo-text">خشبيكو<small>KHASHBIKO</small></span>
+        <button class="icon-btn" id="closeMenu" aria-label="إغلاق القائمة">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="nav-links">
+        <a href="index.html#home">الرئيسية</a>
+        <a href="index.html#products">المنتجات</a>
+        <a href="index.html#about">من نحن</a>
+        <a href="index.html#reviews">آراء العملاء</a>
+        <a href="index.html#contact">تواصل معنا</a>
+      </div>
+      <div class="nav-panel-footer">
+        <a href="#" data-whatsapp-link target="_blank" rel="noopener" class="btn btn-primary btn-block">تواصل عبر واتساب</a>
+        <div class="social-icons">
+          <a href="#" data-social="facebook" aria-label="فيسبوك">f</a>
+          <a href="#" data-social="instagram" aria-label="انستغرام">ig</a>
+          <a href="#" data-social="tiktok" aria-label="تيك توك">tt</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="header-actions">
+      <button class="cart-btn" id="cartBtn" aria-label="فتح سلة المشتريات">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.7L21 8H6"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== مسار التصفح ===== -->
+<nav class="breadcrumb container" id="breadcrumb" aria-label="مسار التصفح" hidden>
+  <a href="index.html">الرئيسية</a>
+  <span class="breadcrumb-sep">/</span>
+  <a href="index.html#products">المنتجات</a>
+  <span class="breadcrumb-sep">/</span>
+  <span id="breadcrumbCurrent" class="breadcrumb-current"></span>
+</nav>
+
+<!-- ===== حالة التحميل ===== -->
+<div class="pd-state pd-loading" id="pdLoading">
+  <svg class="pd-spinner" viewBox="0 0 60 60" width="48" height="48" aria-hidden="true">
+    <circle cx="30" cy="30" r="24" fill="none" stroke="#E7DCC9" stroke-width="4"/>
+    <circle cx="30" cy="30" r="24" fill="none" stroke="#A9744F" stroke-width="4" stroke-dasharray="60 90" stroke-linecap="round"/>
+  </svg>
+  <p>جاري تحميل المنتج...</p>
+</div>
+
+<!-- ===== حالة عدم وجود المنتج ===== -->
+<div class="pd-state pd-not-found" id="pdNotFound" hidden>
+  <svg viewBox="0 0 200 200" width="120" height="120" aria-hidden="true">
+    <circle cx="100" cy="100" r="90" fill="none" stroke="#E7DCC9" stroke-width="3"/>
+    <circle cx="100" cy="100" r="60" fill="none" stroke="#C9A876" stroke-width="3"/>
+    <path d="M80 90h40M80 115h40" stroke="#A9744F" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+  <h1>المنتج غير موجود</h1>
+  <p>يمكن يكون الرابط غير صحيح أو المنتج اتشال من المتجر.</p>
+  <a href="index.html#products" class="btn btn-primary">تصفح كل المنتجات</a>
+</div>
+
+<!-- ===== محتوى المنتج ===== -->
+<main class="pd-content" id="pdContent" hidden>
+  <div class="container">
+
+    <div class="pd-layout">
+      <!-- معرض الصور -->
+      <div class="pd-gallery">
+        <button type="button" class="pd-main-image" id="pdMainImageBtn" aria-label="تكبير الصورة">
+          <img id="pdMainImg" class="pd-main-img" alt="" hidden>
+          <div class="pd-main-icon" id="pdMainIcon"></div>
+        </button>
+        <div class="pd-thumbs" id="pdThumbs"></div>
+      </div>
+
+      <!-- معلومات المنتج -->
+      <div class="pd-info">
+        <div class="pd-tags" id="pdTags"></div>
+        <h1 class="pd-name" id="pdName"></h1>
+
+        <div class="pd-rating" id="pdRating" hidden>
+          <span class="pd-stars" id="pdStars"></span>
+          <span class="pd-rating-count" id="pdRatingCount"></span>
+        </div>
+
+        <div class="pd-price-row" id="pdPriceRow"></div>
+        <p class="pd-short-desc" id="pdShortDesc"></p>
+        <div class="pd-stock" id="pdStock"></div>
+
+        <div class="pd-purchase" id="pdPurchase">
+          <div class="qty-stepper pd-qty-stepper" role="group" aria-label="الكمية">
+            <button type="button" class="qty-btn" id="pdQtyMinus" aria-label="تقليل الكمية">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+            </button>
+            <span id="pdQty">1</span>
+            <button type="button" class="qty-btn" id="pdQtyPlus" aria-label="زيادة الكمية">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <button type="button" class="btn btn-primary" id="pdAddCart">أضف للسلة</button>
+          <button type="button" class="btn btn-ghost" id="pdBuyNow">اشترِ الآن</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- وصف المنتج -->
+    <section class="pd-section">
+      <h2>وصف المنتج</h2>
+      <p class="pd-full-desc" id="pdFullDesc"></p>
+    </section>
+
+    <!-- المواصفات -->
+    <section class="pd-section" id="pdSpecsSection" hidden>
+      <h2>المواصفات</h2>
+      <dl class="pd-specs" id="pdSpecsList"></dl>
+    </section>
+
+    <!-- آراء العملاء -->
+    <section class="pd-section" id="pdReviewsSection">
+      <h2>آراء العملاء</h2>
+      <div id="pdReviewsBody"></div>
+
+      <div class="review-form-wrap">
+        <h3>شارك رأيك في هذا المنتج</h3>
+        <form class="admin-form review-form" id="reviewForm">
+          <label>
+            اسمك
+            <input type="text" id="revName" required placeholder="اكتب اسمك">
+          </label>
+          <label>
+            تقييمك
+            <span class="star-picker" id="starPicker" role="radiogroup" aria-label="التقييم بالنجوم">
+              <button type="button" class="star-btn" data-value="1" aria-label="نجمة واحدة">★</button>
+              <button type="button" class="star-btn" data-value="2" aria-label="نجمتين">★</button>
+              <button type="button" class="star-btn" data-value="3" aria-label="3 نجوم">★</button>
+              <button type="button" class="star-btn" data-value="4" aria-label="4 نجوم">★</button>
+              <button type="button" class="star-btn" data-value="5" aria-label="5 نجوم">★</button>
+            </span>
+          </label>
+          <label>
+            تعليقك
+            <textarea id="revComment" rows="3" required placeholder="شاركنا رأيك في المنتج"></textarea>
+          </label>
+          <button type="submit" class="btn btn-primary">إرسال التقييم</button>
+          <p class="form-note" id="reviewFormNote"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- منتجات مشابهة -->
+    <section class="pd-section" id="pdRelatedSection" hidden>
+      <h2>منتجات مشابهة</h2>
+      <div class="product-grid pd-related-grid" id="pdRelatedGrid"></div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ===== شريط ثابت لإضافة المنتج للسلة على الموبايل ===== -->
+<div class="pd-sticky-bar" id="pdStickyBar" hidden>
+  <span class="pd-sticky-price" id="pdStickyPrice"></span>
+  <button type="button" class="btn btn-primary" id="pdStickyAddCart">أضف للسلة</button>
+</div>
+
+<!-- ===== Footer (نفس فوتر الصفحة الرئيسية) ===== -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-text">خشبيكو<small>KHASHBIKO</small></span>
+      <p>مصنوعات خشبية يدوية بلمسة مصرية أصيلة.</p>
+    </div>
+    <div class="footer-links">
+      <h4>روابط سريعة</h4>
+      <a href="index.html#home">الرئيسية</a>
+      <a href="index.html#products">المنتجات</a>
+      <a href="index.html#about">من نحن</a>
+      <a href="index.html#contact">تواصل معنا</a>
+    </div>
+    <div class="footer-social">
+      <h4>تابعنا</h4>
+      <div class="social-icons">
+        <a href="#" data-social="facebook" aria-label="فيسبوك">f</a>
+        <a href="#" data-social="instagram" aria-label="انستغرام">ig</a>
+        <a href="#" data-social="tiktok" aria-label="تيك توك">tt</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="year"></span> خشبيكو. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<!-- ===== Floating WhatsApp ===== -->
+<a href="#" data-whatsapp-link target="_blank" rel="noopener" class="whatsapp-float" aria-label="تواصل عبر واتساب">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.87.51 3.62 1.4 5.13L2 22l5.13-1.5a9.9 9.9 0 004.9 1.28h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.06a8.1 8.1 0 01-4.14-1.13l-.3-.18-3.05.89.9-2.96-.2-.31a8.1 8.1 0 01-1.24-4.36c0-4.48 3.65-8.13 8.14-8.13 4.48 0 8.13 3.65 8.13 8.14 0 4.48-3.65 8.14-8.13 8.14zm4.46-6.09c-.24-.12-1.44-.71-1.66-.8-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.96-.14.16-.28.18-.53.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.11-.5.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.34-.76-1.83-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.03 0 1.2.87 2.35.99 2.51.12.16 1.71 2.62 4.15 3.67.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+</a>
+
+<!-- ===== Cart Drawer (نفس سلة الصفحة الرئيسية) ===== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="سلة المشتريات">
+  <div class="cart-drawer-header">
+    <h3>سلة المشتريات</h3>
+    <button class="icon-btn" id="closeCart" aria-label="إغلاق السلة">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>الإجمالي</span><strong id="cartTotal">0 ج.م</strong></div>
+    <button class="btn btn-primary btn-block" id="checkoutBtn" disabled>إتمام الطلب عبر واتساب</button>
+    <p class="cart-hint">هيتم فتح واتساب برسالة جاهزة تحتوي على طلبك، وتقدر تأكده مباشرة مع فريقنا.</p>
+    <p class="form-note" id="cartEmptyNote"></p>
+  </div>
+</aside>
+
+<!-- ===== تكبير الصورة (Lightbox) ===== -->
+<div class="modal-overlay" id="lightboxOverlay"></div>
+<div class="pd-lightbox" id="pdLightbox" role="dialog" aria-modal="true" aria-label="تكبير صورة المنتج">
+  <button class="icon-btn modal-close" id="closeLightbox" aria-label="إغلاق">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img id="pdLightboxImg" src="" alt="">
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/media-utils.js"></script>
+<script src="assets/js/products-data.js"></script>
+<script src="assets/js/site-common.js"></script>
+<script src="assets/js/product-page.js"></script>
+</body>
+</html>

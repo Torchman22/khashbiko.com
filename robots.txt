@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# غيّر الرابط تحت بدومينك الفعلي بعد ربط الموقع بالاستضافة
+Sitemap: https://www.khashbiko.com/sitemap.xml
