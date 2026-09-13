@@ -16,5 +16,5 @@ const SITE_CONFIG = {
     tiktok: "https://www.tiktok.com/@lucky_card44"
   },
   contactFormAction: "",
-  reviewFormAction: ""
+  reviewFormAction: "https://formspree.io/f/xoeqodak"
 };
