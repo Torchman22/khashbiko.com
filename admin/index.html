@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>لوحة تحكم خشبيكو</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%233E2723'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='%23C9A876' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body class="admin-body">
+
+<!-- ===== شاشة الدخول ===== -->
+<div class="login-screen" id="loginScreen">
+  <form class="login-card" id="loginForm">
+    <svg class="login-rings" viewBox="0 0 60 60" width="52" height="52" aria-hidden="true">
+      <circle cx="30" cy="30" r="27" fill="#3E2723"/>
+      <circle cx="30" cy="30" r="20" fill="none" stroke="#C9A876" stroke-width="2"/>
+      <circle cx="30" cy="30" r="13" fill="none" stroke="#C9A876" stroke-width="2"/>
+      <circle cx="30" cy="30" r="6" fill="#C9A876"/>
+    </svg>
+    <h1>لوحة تحكم خشبيكو</h1>
+    <p class="login-sub">مساحة خاصة بصاحب المتجر لإدارة المنتجات والإعدادات</p>
+    <label class="login-field">
+      كلمة المرور
+      <input type="password" id="loginPassword" placeholder="اكتب كلمة المرور" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block">دخول</button>
+    <p class="login-error" id="loginError"></p>
+    <p class="login-hint">كلمة المرور الافتراضية موجودة في ملف <code>admin/assets/admin-config.js</code> — غيّرها فورًا. راجع دليل-لوحة-التحكم.txt لمعرفة حدود هذه الحماية.</p>
+  </form>
+</div>
+
+<!-- ===== لوحة التحكم ===== -->
+<div class="admin-shell" id="adminShell" hidden>
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <span class="logo-text">خشبيكو<small>لوحة التحكم</small></span>
+      <div class="admin-header-actions">
+        <a href="../index.html" target="_blank" rel="noopener" class="btn btn-ghost btn-small-pad">عرض الموقع</a>
+        <button type="button" class="btn btn-ghost btn-small-pad" id="logoutBtn">تسجيل خروج</button>
+      </div>
+    </div>
+    <nav class="admin-tabs" id="adminTabs">
+      <button type="button" class="admin-tab active" data-tab="products">المنتجات</button>
+      <button type="button" class="admin-tab" data-tab="categories">الفئات</button>
+      <button type="button" class="admin-tab" data-tab="settings">الإعدادات</button>
+      <button type="button" class="admin-tab" data-tab="export">الحفظ والتصدير</button>
+    </nav>
+  </header>
+
+  <main class="admin-main">
+    <div class="container">
+
+      <!-- ===== تبويب المنتجات ===== -->
+      <section class="admin-panel active" id="panelProducts">
+        <div class="panel-toolbar">
+          <div class="search-bar admin-search">
+            <span class="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </span>
+            <input type="search" id="productAdminSearch" placeholder="ابحث في منتجاتك...">
+          </div>
+          <button type="button" class="btn btn-primary" id="addProductBtn">+ إضافة منتج جديد</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="productsTable">
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>الفئات</th>
+                <th>السعر</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+        <p class="admin-empty" id="productsEmptyState" hidden>لا توجد منتجات بعد. اضغط "إضافة منتج جديد" للبدء.</p>
+      </section>
+
+      <!-- ===== تبويب الفئات ===== -->
+      <section class="admin-panel" id="panelCategories">
+        <div class="panel-toolbar">
+          <p class="panel-hint">الفئات هي الهاشتاجات اللي المنتجات بتتصنف تحتها، وبتظهر كفلاتر للعميل فوق قسم المنتجات.</p>
+          <button type="button" class="btn btn-primary" id="addCategoryBtn">+ إضافة فئة جديدة</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="categoriesTable">
+            <thead>
+              <tr>
+                <th>الفئة</th>
+                <th>المعرف</th>
+                <th>عدد المنتجات</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="categoriesTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== تبويب الإعدادات ===== -->
+      <section class="admin-panel" id="panelSettings">
+        <p class="panel-hint">هذه الإعدادات تتحكم في رقم الواتساب، العملة، وبيانات التواصل الظاهرة في كل الموقع.</p>
+        <form class="admin-form settings-form" id="settingsForm">
+          <div class="form-grid">
+            <label>
+              رقم الواتساب (بصيغة دولية، بدون + وبدون صفر البداية)
+              <input type="text" id="cfgWhatsapp" placeholder="201000000000" dir="ltr">
+            </label>
+            <label>
+              رمز العملة
+              <input type="text" id="cfgCurrency" placeholder="ج.م">
+            </label>
+            <label>
+              رقم الهاتف الظاهر للعملاء
+              <input type="text" id="cfgPhone" placeholder="+20 100 000 0000" dir="ltr">
+            </label>
+            <label>
+              البريد الإلكتروني
+              <input type="email" id="cfgEmail" placeholder="hello@khashbiko.com" dir="ltr">
+            </label>
+            <label class="span-2">
+              العنوان
+              <input type="text" id="cfgAddress" placeholder="القاهرة، مصر">
+            </label>
+            <label>
+              رابط فيسبوك
+              <input type="url" id="cfgFacebook" placeholder="https://facebook.com/..." dir="ltr">
+            </label>
+            <label>
+              رابط انستجرام
+              <input type="url" id="cfgInstagram" placeholder="https://instagram.com/..." dir="ltr">
+            </label>
+            <label>
+              رابط تيك توك
+              <input type="url" id="cfgTiktok" placeholder="https://tiktok.com/@..." dir="ltr">
+            </label>
+            <label class="span-2">
+              رابط استقبال فورم التواصل (اختياري — Formspree أو مشابه)
+              <input type="url" id="cfgFormAction" placeholder="https://formspree.io/f/xxxxxxx" dir="ltr">
+            </label>
+            <label class="span-2">
+              رابط استقبال تقييمات العملاء (اختياري — ينفع نفس الرابط فوق أو رابط منفصل)
+              <input type="url" id="cfgReviewFormAction" placeholder="https://formspree.io/f/yyyyyyy" dir="ltr">
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
+        </form>
+      </section>
+
+      <!-- ===== تبويب الحفظ والتصدير ===== -->
+      <section class="admin-panel" id="panelExport">
+        <div class="export-notice">
+          <h3>ليه محتاج "أصدّر" وأرفع بدل ما يتحفظ لوحده؟</h3>
+          <p>موقع خشبيكو موقع ثابت (Static) من غير قاعدة بيانات أو سيرفر خلفي — وده اللي بيخليه سريع وسهل الاستضافة على أي مكان.
+          التعديلات اللي بتعملها هنا بتتحفظ في متصفحك فقط (كمسودة عمل)، ولازم "تصدّرها" كملف وترفعه على استضافتك
+          عشان تظهر لكل زوار الموقع. التفاصيل الكاملة في ملف <code>دليل-لوحة-التحكم.txt</code>.</p>
+        </div>
+
+        <div class="export-cards">
+          <div class="export-card">
+            <h4>1) ملف المنتجات والفئات</h4>
+            <p>يحتوي كل منتجاتك وفئاتك الحالية بنفس تنسيق الملف الأصلي.</p>
+            <button type="button" class="btn btn-primary btn-block" id="exportProductsBtn">⬇ تنزيل products-data.js</button>
+          </div>
+          <div class="export-card">
+            <h4>2) ملف الإعدادات</h4>
+            <p>رقم الواتساب، العملة، بيانات التواصل وروابط السوشيال ميديا.</p>
+            <button type="button" class="btn btn-primary btn-block" id="exportConfigBtn">⬇ تنزيل config.js</button>
+          </div>
+        </div>
+
+        <ol class="export-steps">
+          <li>اضغط زر التنزيل المناسب فوق — هينزل الملف باسمه الصحيح جاهزًا للرفع.</li>
+          <li>افتح مدير الملفات في استضافتك وادخل مجلد <code>assets/js</code>.</li>
+          <li>ارفع الملف الجديد فوق القديم بنفس الاسم (استبدال).</li>
+          <li>افتح موقعك وتأكد إن التعديلات ظهرت.</li>
+        </ol>
+
+        <div class="export-footer">
+          <p class="draft-status" id="draftStatus">لا توجد تعديلات محفوظة محليًا بعد.</p>
+          <button type="button" class="btn btn-ghost" id="resetDraftBtn">استرجاع النسخة الحالية من الموقع</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== نافذة إضافة/تعديل منتج ===== -->
+<div class="modal-overlay" id="adminModalOverlay"></div>
+<div class="admin-modal admin-modal-lg" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+  <div class="admin-modal-header">
+    <h3 id="productModalTitle">إضافة منتج جديد</h3>
+    <button type="button" class="icon-btn" id="closeProductModal" aria-label="إغلاق">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="admin-modal-body two-col">
+    <form class="admin-form" id="productForm">
+      <input type="hidden" id="fldProductId">
+
+      <label>
+        اسم المنتج
+        <input type="text" id="fldName" required placeholder="مثال: صينية تقديم خشب الزان">
+      </label>
+
+      <div class="form-row">
+        <label>
+          السعر الحالي
+          <input type="number" id="fldPrice" min="0" step="0.01" required placeholder="450">
+        </label>
+        <label>
+          السعر قبل الخصم (اختياري)
+          <input type="number" id="fldOldPrice" min="0" step="0.01" placeholder="اتركه فارغًا لو مفيش خصم">
+        </label>
+      </div>
+
+      <label>
+        الفئات (يمكن اختيار أكثر من واحدة)
+        <span class="checkbox-grid" id="fldCategories"></span>
+      </label>
+
+      <label>
+        الوصف
+        <textarea id="fldDescription" rows="3" placeholder="وصف قصير وواضح للمنتج"></textarea>
+        <span class="field-hint">وصف قصير (سطر أو سطرين) بيظهر بشكل أوضح في الكروت.</span>
+      </label>
+
+      <div class="form-row">
+        <label>
+          الأيقونة البديلة (تظهر لو مفيش صورة)
+          <select id="fldIcon"></select>
+        </label>
+        <label>
+          الشارة (اختياري)
+          <input type="text" id="fldBadge" placeholder="مثال: جديد">
+        </label>
+      </div>
+      <div class="badge-presets" id="badgePresets"></div>
+
+      <label class="toggle-row">
+        <span>متوفر للبيع</span>
+        <span class="toggle-switch">
+          <input type="checkbox" id="fldInStock" checked>
+          <span class="toggle-slider"></span>
+        </span>
+      </label>
+
+      <hr class="field-divider">
+
+      <label>
+        صورة المنتج
+        <input type="file" id="fldImageFile" accept="image/*">
+      </label>
+      <div class="image-tools" id="imageTools" hidden>
+        <img id="imagePreview" class="image-preview" alt="معاينة الصورة">
+        <div class="image-tools-actions">
+          <button type="button" class="btn btn-small" id="downloadImageBtn">⬇ تنزيل الصورة بالاسم الصحيح</button>
+          <span class="field-hint">نزّل الصورة بهذا الاسم، وارفعها لمجلد <code>assets/images/products</code> عن طريق مدير الملفات.</span>
+        </div>
+      </div>
+      <label>
+        مسار الصورة في الموقع
+        <input type="text" id="fldImagePath" placeholder="assets/images/products/p001.jpg" dir="ltr">
+        <span class="field-hint">يتم تعبئته تلقائيًا عند اختيار صورة، أو اكتبه يدويًا لو الصورة مرفوعة بالفعل.</span>
+      </label>
+
+      <hr class="field-divider">
+
+      <label>
+        رابط فيديو المنتج (اختياري — يوتيوب / Vimeo / رابط ملف مباشر)
+        <input type="url" id="fldVideo" placeholder="https://youtube.com/watch?v=..." dir="ltr">
+      </label>
+      <div class="video-preview-wrap" id="videoPreviewWrap" hidden>
+        <div class="video-preview" id="videoPreview"></div>
+      </div>
+
+      <hr class="field-divider">
+
+      <label>
+        معرض الصور الإضافية (اختياري)
+        <span class="field-hint">صور إضافية غير الصورة الرئيسية، بتظهر في معرض صفحة تفاصيل المنتج فقط.</span>
+      </label>
+      <div class="gallery-list" id="galleryList"></div>
+      <button type="button" class="btn btn-small" id="addGalleryImageBtn">+ إضافة صورة للمعرض</button>
+
+      <hr class="field-divider">
+
+      <label>
+        المواصفات (اختياري)
+        <span class="field-hint">مثل الخامة، المقاس، اللون، الوزن — بتظهر في صفحة تفاصيل المنتج فقط. لو مفيش مواصفات، القسم مش هيظهر للعميل.</span>
+      </label>
+      <div class="specs-list" id="specsList"></div>
+      <button type="button" class="btn btn-small" id="addSpecBtn">+ إضافة مواصفة</button>
+
+      <hr class="field-divider">
+
+      <label>
+        تقييمات العملاء المنشورة (اختياري)
+        <span class="field-hint">تقييمات راجعتها ووافقت عليها بنفسك (وصلتك بالإيميل من فورم صفحة المنتج، أو جمعتها من مصدر تاني). دي اللي بتظهر لكل زوار الموقع.</span>
+      </label>
+      <div class="reviews-list" id="reviewsList"></div>
+      <button type="button" class="btn btn-small" id="addReviewBtn">+ إضافة تقييم</button>
+
+      <a href="#" id="viewFullPageLink" class="view-full-page-link" target="_blank" rel="noopener" hidden>🔗 عرض صفحة المنتج كاملة</a>
+    </form>
+
+    <aside class="live-preview">
+      <p class="live-preview-label">معاينة مباشرة</p>
+      <div class="live-preview-frame" id="livePreviewFrame"></div>
+    </aside>
+  </div>
+  <div class="admin-modal-footer">
+    <button type="button" class="btn btn-ghost" id="cancelProductBtn">إلغاء</button>
+    <button type="submit" form="productForm" class="btn btn-primary" id="saveProductBtn">حفظ المنتج</button>
+  </div>
+</div>
+
+<!-- ===== نافذة إضافة/تعديل فئة ===== -->
+<div class="admin-modal" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+  <div class="admin-modal-header">
+    <h3 id="categoryModalTitle">إضافة فئة جديدة</h3>
+    <button type="button" class="icon-btn" id="closeCategoryModal" aria-label="إغلاق">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="admin-modal-body">
+    <form class="admin-form" id="categoryForm">
+      <input type="hidden" id="catFldId">
+      <label>
+        اسم الفئة (الاسم الظاهر للعميل)
+        <input type="text" id="catFldLabel" required placeholder="مثال: أطفال">
+      </label>
+      <label>
+        المعرف بالإنجليزي (اختياري)
+        <input type="text" id="catFldSlug" placeholder="سيُنشأ تلقائيًا لو تركته فارغًا" dir="ltr">
+        <span class="field-hint">حروف إنجليزية صغيرة وأرقام وشرطات فقط، بدون مسافات.</span>
+      </label>
+      <label>
+        الأيقونة
+        <select id="catFldIcon"></select>
+      </label>
+    </form>
+  </div>
+  <div class="admin-modal-footer">
+    <button type="button" class="btn btn-ghost" id="cancelCategoryBtn">إلغاء</button>
+    <button type="submit" form="categoryForm" class="btn btn-primary">حفظ الفئة</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/icons.js"></script>
+<script src="../assets/js/media-utils.js"></script>
+<script src="../assets/js/products-data.js"></script>
+<script src="assets/admin-config.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
