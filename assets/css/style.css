@@ -695,6 +695,17 @@ body.modal-open .pd-lightbox{opacity:1;pointer-events:auto;}
   .pd-main-image{max-width:460px;margin:0 auto;width:100%;}
   .pd-thumbs{max-width:460px;margin:0 auto;}
   .pd-related-grid{grid-template-columns:repeat(3,1fr);}
+
+  /* --- Category filter pills: scroll sideways instead of wrapping,
+     from tablet width down through phones --- */
+  .filter-pills{
+    flex-wrap:nowrap;overflow-x:auto;gap:8px;
+    padding-bottom:4px;margin:0 -20px;padding-inline:20px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .filter-pills::-webkit-scrollbar{display:none;}
+  .filter-pill{flex:0 0 auto;}
 }
 
 @media (max-width:640px){
@@ -730,12 +741,7 @@ body.modal-open .pd-lightbox{opacity:1;pointer-events:auto;}
   .products{padding:56px 0;}
   .products-toolbar{flex-direction:column;align-items:stretch;gap:14px;margin-bottom:24px;}
   .search-bar{flex:none;}
-  .filter-pills{
-    flex-wrap:nowrap;overflow-x:auto;gap:8px;
-    padding-bottom:4px;margin:0 -16px;padding-inline:16px;
-    scrollbar-width:none;
-  }
-  .filter-pills::-webkit-scrollbar{display:none;}
+  .filter-pills{margin:0 -16px;padding-inline:16px;}
   .filter-pill{flex:0 0 auto;padding:8px 16px;font-size:.82rem;}
 
   /* --- Product cards: 2-up compact layout --- */
