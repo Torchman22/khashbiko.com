@@ -721,10 +721,15 @@ body.modal-open .pd-lightbox{opacity:1;pointer-events:auto;}
   .hero-stats strong{font-size:1.3rem;}
   .hero-stats span{font-size:.72rem;}
 
-  /* --- Categories: 2-up, more compact cards --- */
+  /* --- Categories: horizontal scroll strip instead of a wrapping grid --- */
   .categories{padding:48px 0;}
-  .cat-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .cat-card{padding:22px 10px;}
+  .cat-grid{
+    display:flex;flex-wrap:nowrap;overflow-x:auto;gap:12px;
+    padding-bottom:4px;margin:0 -16px;padding-inline:16px;
+    scrollbar-width:none;
+  }
+  .cat-grid::-webkit-scrollbar{display:none;}
+  .cat-card{flex:0 0 108px;width:108px;padding:18px 8px;}
 
   /* --- Products toolbar: full-width search, scrollable chips --- */
   .products{padding:56px 0;}
@@ -815,7 +820,7 @@ body.modal-open .pd-lightbox{opacity:1;pointer-events:auto;}
   .hero-stats{gap:4px;}
   .hero-stats strong{font-size:1.15rem;}
   .cat-grid{gap:10px;}
-  .cat-card{padding:18px 8px;}
-  .cat-card span{font-size:.85rem;}
+  .cat-card{flex:0 0 92px;width:92px;padding:16px 6px;}
+  .cat-card span{font-size:.8rem;}
   .product-thumb{height:105px;}
 }
