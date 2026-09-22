@@ -205,6 +205,34 @@
 .view-full-page-link:hover{color:var(--walnut);text-decoration:underline;}
 
 /* ===== نافذة الإعدادات (تستخدم شبكة الفورم) ===== */
+/* ===== الشريط الإعلاني ===== */
+.announce-preview-wrap{
+  background:var(--paper);border:1px dashed var(--paper-2);border-radius:var(--radius);
+  padding:20px;margin-bottom:24px;
+}
+.announce-preview-wrap .announce-bar{margin:0;max-width:100%;padding:0;}
+
+.announcements-list{display:grid;gap:10px;}
+.announcement-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--white);border-radius:var(--radius-sm);padding:12px 16px;
+  box-shadow:0 2px 8px rgba(42,27,24,.05);
+}
+.announcement-row.is-disabled{opacity:.55;}
+.announcement-row-info{display:flex;align-items:center;gap:10px;min-width:0;}
+.announcement-row-emoji{font-size:1.2rem;flex-shrink:0;}
+.announcement-row-text{
+  font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;
+}
+.announcement-row-actions{display:flex;gap:6px;flex-shrink:0;}
+.announcement-row-actions button{
+  background:none;border:1px solid var(--paper-2);border-radius:8px;width:30px;height:30px;
+  cursor:pointer;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:.9rem;
+}
+.announcement-row-actions button:hover{border-color:var(--oak);color:var(--walnut);}
+.announcement-row-actions .row-delete:hover{border-color:var(--rust);color:var(--rust);}
+.announcement-row-actions button:disabled{opacity:.3;cursor:not-allowed;}
+
 .settings-form .form-grid{max-width:820px;}
 
 /* ===== نوافذ اللوحة (مودالز) ===== */
