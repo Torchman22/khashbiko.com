@@ -21,11 +21,14 @@
   var DRAFT_TIME_KEY = "khashbiko_admin_draft_time";
   var AUTH_KEY = "khashbiko_admin_authed";
 
-  var state = { categories: [], products: [], config: {} };
+  var state = { categories: [], products: [], config: {}, announceSettings: {}, announcements: [] };
   var editingProductId = null;
   var editingCategoryId = null;
+  var editingAnnouncementId = null;
   var currentImageFile = null;
   var currentImagePreviewDataUrl = null;
+  var currentAnImageFile = null;
+  var currentAnImagePreviewDataUrl = null;
   var galleryRows = []; // { rowId, path, file, previewDataUrl }
   var specRows = []; // { rowId, label, value }
   var reviewRows = []; // { rowId, name, rating, comment, date }
@@ -103,9 +106,13 @@
     var liveCategories = typeof PRODUCT_CATEGORIES !== "undefined" ? PRODUCT_CATEGORIES : [];
     var liveProducts = typeof PRODUCTS !== "undefined" ? PRODUCTS : [];
     var liveConfig = typeof SITE_CONFIG !== "undefined" ? SITE_CONFIG : {};
+    var liveAnnounceSettings = typeof ANNOUNCEMENT_BAR !== "undefined" ? ANNOUNCEMENT_BAR : {};
+    var liveAnnouncements = typeof ANNOUNCEMENTS !== "undefined" ? ANNOUNCEMENTS : [];
 
     state.categories = JSON.parse(JSON.stringify(liveCategories));
     state.products = JSON.parse(JSON.stringify(liveProducts));
+    state.announceSettings = JSON.parse(JSON.stringify(liveAnnounceSettings));
+    state.announcements = JSON.parse(JSON.stringify(liveAnnouncements));
     state.config = {
       whatsappNumber: liveConfig.whatsappNumber || "",
       currency: liveConfig.currency || "ج.م",
@@ -134,6 +141,12 @@
       state.categories = draft.categories;
       state.products = draft.products;
       state.config = draft.config;
+      // مسودات قديمة من قبل إضافة الشريط الإعلاني ممكن ميكونش فيها الحقول دي —
+      // في الحالة دي بنجيبها من ملفات الموقع الحالية بدل ما نكسر المسودة.
+      var liveAnnounceSettings = typeof ANNOUNCEMENT_BAR !== "undefined" ? ANNOUNCEMENT_BAR : {};
+      var liveAnnouncements = typeof ANNOUNCEMENTS !== "undefined" ? ANNOUNCEMENTS : [];
+      state.announceSettings = draft.announceSettings || JSON.parse(JSON.stringify(liveAnnounceSettings));
+      state.announcements = Array.isArray(draft.announcements) ? draft.announcements : JSON.parse(JSON.stringify(liveAnnouncements));
     } else {
       loadFromLive();
     }
@@ -245,6 +258,7 @@
   function closeAnyOpenModal() {
     if ($("productModal").classList.contains("open")) closeProductModalFn();
     if ($("categoryModal").classList.contains("open")) closeCategoryModalFn();
+    if ($("announcementModal").classList.contains("open")) closeAnnouncementModalFn();
   }
 
   // ------------------------------------------------------------------
@@ -944,6 +958,245 @@
   }
 
   // ------------------------------------------------------------------
+  // الشريط الإعلاني — الإعدادات العامة والمعاينة المباشرة
+  // ------------------------------------------------------------------
+  function collectAnnounceSettingsFromForm() {
+    return {
+      enabled: $("anEnabled").checked,
+      mode: $("anMode").value,
+      direction: $("anDirection").value,
+      staticAlign: $("anAlign").value,
+      speed: $("anSpeed").value,
+      customSpeed: parseInt($("anCustomSpeed").value, 10) || 60,
+      bgColor: $("anBgColor").value,
+      textColor: $("anTextColor").value,
+      accentColor: $("anAccentColor").value,
+      textSize: parseInt($("anTextSize").value, 10) || 14,
+      textWeight: $("anTextWeight").value,
+      emojiSize: parseInt($("anEmojiSize").value, 10) || 16,
+      imageSize: parseInt($("anImageSize").value, 10) || 20,
+      borderRadius: parseInt($("anRadius").value, 10) || 0
+    };
+  }
+
+  function updateAnnounceConditionalFields() {
+    var isAnimated = $("anMode").value === "animated";
+    $("anDirectionWrap").hidden = !isAnimated;
+    $("anSpeedWrap").hidden = !isAnimated;
+    $("anAlignWrap").hidden = isAnimated;
+    var isCustomSpeed = $("anSpeed").value === "custom";
+    $("anCustomSpeedWrap").hidden = !(isAnimated && isCustomSpeed);
+  }
+
+  function renderAnnounceSettingsForm() {
+    var s = state.announceSettings || {};
+    $("anEnabled").checked = s.enabled !== false;
+    $("anMode").value = s.mode || "animated";
+    $("anDirection").value = s.direction || "rtl";
+    $("anAlign").value = s.staticAlign || "center";
+    $("anSpeed").value = s.speed || "medium";
+    $("anCustomSpeed").value = s.customSpeed || 60;
+    $("anBgColor").value = s.bgColor || "#3E2723";
+    $("anTextColor").value = s.textColor || "#FFFDF9";
+    $("anAccentColor").value = s.accentColor || "#C9A876";
+    $("anTextSize").value = s.textSize || 14;
+    $("anTextWeight").value = s.textWeight || "normal";
+    $("anEmojiSize").value = s.emojiSize || 16;
+    $("anImageSize").value = s.imageSize != null ? s.imageSize : 20;
+    $("anRadius").value = s.borderRadius != null ? s.borderRadius : 999;
+    updateAnnounceConditionalFields();
+    renderAnnouncePreview();
+  }
+
+  function saveAnnounceSettingsForm(e) {
+    e.preventDefault();
+    state.announceSettings = collectAnnounceSettingsFromForm();
+    saveDraft();
+    showToast("تم حفظ إعدادات الشريط");
+    renderAnnouncePreview();
+  }
+
+  function renderAnnouncePreview() {
+    if (typeof AnnouncementBar === "undefined") return;
+    var settings = collectAnnounceSettingsFromForm();
+    AnnouncementBar.render("previewAnnounceBar", "previewAnnounceTrack", settings, state.announcements);
+  }
+
+  // ------------------------------------------------------------------
+  // الشريط الإعلاني — قائمة الإعلانات (ترتيب، تعديل، حذف)
+  // ------------------------------------------------------------------
+  function generateAnnouncementId(items) {
+    var maxNum = 0;
+    items.forEach(function (a) {
+      var m = /^a(\d+)$/.exec(a.id);
+      if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
+    });
+    var n = maxNum + 1;
+    var id = "a" + n;
+    while (items.some(function (a) { return a.id === id; })) { n++; id = "a" + n; }
+    return id;
+  }
+
+  function renderAnnouncementsList() {
+    var wrap = $("announcementsList");
+    if (!wrap) return;
+    var items = state.announcements || [];
+    if (items.length === 0) {
+      wrap.innerHTML = '<span class="field-hint">لا توجد إعلانات بعد.</span>';
+      return;
+    }
+    wrap.innerHTML = items.map(function (a, i) {
+      return (
+        '<div class="announcement-row' + (a.enabled === false ? " is-disabled" : "") + '" data-id="' + a.id + '">' +
+          '<div class="announcement-row-info">' +
+            (a.emoji ? '<span class="announcement-row-emoji">' + a.emoji + "</span>" : "") +
+            '<span class="announcement-row-text">' + a.text + "</span>" +
+            (a.enabled === false ? '<span class="status-pill out">معطّل</span>' : "") +
+          "</div>" +
+          '<div class="announcement-row-actions">' +
+            '<button type="button" class="an-move-up" data-id="' + a.id + '" aria-label="تحريك لأعلى"' + (i === 0 ? " disabled" : "") + ">↑</button>" +
+            '<button type="button" class="an-move-down" data-id="' + a.id + '" aria-label="تحريك لأسفل"' + (i === items.length - 1 ? " disabled" : "") + ">↓</button>" +
+            '<button type="button" class="an-edit" data-id="' + a.id + '" aria-label="تعديل">' + safeIcon("edit", 14) + "</button>" +
+            '<button type="button" class="an-delete" data-id="' + a.id + '" aria-label="حذف">' + safeIcon("trash", 14) + "</button>" +
+          "</div>" +
+        "</div>"
+      );
+    }).join("");
+
+    wrap.querySelectorAll(".an-move-up").forEach(function (btn) {
+      btn.addEventListener("click", function () { moveAnnouncement(btn.dataset.id, -1); });
+    });
+    wrap.querySelectorAll(".an-move-down").forEach(function (btn) {
+      btn.addEventListener("click", function () { moveAnnouncement(btn.dataset.id, 1); });
+    });
+    wrap.querySelectorAll(".an-edit").forEach(function (btn) {
+      btn.addEventListener("click", function () { openAnnouncementModal(btn.dataset.id); });
+    });
+    wrap.querySelectorAll(".an-delete").forEach(function (btn) {
+      btn.addEventListener("click", function () { deleteAnnouncement(btn.dataset.id); });
+    });
+  }
+
+  function moveAnnouncement(id, delta) {
+    var idx = state.announcements.findIndex(function (a) { return a.id === id; });
+    var newIdx = idx + delta;
+    if (idx === -1 || newIdx < 0 || newIdx >= state.announcements.length) return;
+    var tmp = state.announcements[idx];
+    state.announcements[idx] = state.announcements[newIdx];
+    state.announcements[newIdx] = tmp;
+    saveDraft();
+    renderAnnouncementsList();
+    renderAnnouncePreview();
+  }
+
+  function deleteAnnouncement(id) {
+    var a = state.announcements.filter(function (x) { return x.id === id; })[0];
+    if (!a) return;
+    if (!window.confirm('هل تريد حذف الإعلان "' + a.text + '"؟')) return;
+    state.announcements = state.announcements.filter(function (x) { return x.id !== id; });
+    saveDraft();
+    renderAnnouncementsList();
+    renderAnnouncePreview();
+    showToast("تم حذف الإعلان");
+  }
+
+  // ------------------------------------------------------------------
+  // الشريط الإعلاني — نافذة إضافة/تعديل إعلان
+  // ------------------------------------------------------------------
+  function openAnnouncementModal(id) {
+    editingAnnouncementId = id || null;
+    var a = id ? state.announcements.filter(function (x) { return x.id === id; })[0] : null;
+    currentAnImageFile = null;
+    currentAnImagePreviewDataUrl = null;
+
+    $("announcementModalTitle").textContent = a ? "تعديل إعلان" : "إضافة إعلان";
+    $("anFldId").value = a ? a.id : "";
+    $("anFldText").value = a ? a.text : "";
+    $("anFldEmoji").value = a ? (a.emoji || "") : "";
+    $("anFldLink").value = a ? (a.link || "") : "";
+    $("anFldImagePath").value = a ? (a.image || "") : "";
+    $("anFldEnabled").checked = a ? a.enabled !== false : true;
+    $("anFldImageFile").value = "";
+    $("anImageTools").hidden = true;
+
+    openModal("announcementModal");
+  }
+
+  function closeAnnouncementModalFn() {
+    closeModalEl("announcementModal");
+    editingAnnouncementId = null;
+    currentAnImageFile = null;
+    currentAnImagePreviewDataUrl = null;
+  }
+
+  function handleAnImageFileChange(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) {
+      currentAnImageFile = null;
+      currentAnImagePreviewDataUrl = null;
+      $("anImageTools").hidden = true;
+      return;
+    }
+    currentAnImageFile = file;
+
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      currentAnImagePreviewDataUrl = ev.target.result;
+      $("anImagePreview").src = currentAnImagePreviewDataUrl;
+      $("anImageTools").hidden = false;
+    };
+    reader.readAsDataURL(file);
+
+    var id = $("anFldId").value || editingAnnouncementId || generateAnnouncementId(state.announcements);
+    var ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    $("anFldImagePath").value = "assets/images/announcements/" + id + "." + ext;
+  }
+
+  function downloadAnImage() {
+    if (!currentAnImageFile) { showToast("اختر صورة أولاً"); return; }
+    var path = $("anFldImagePath").value || currentAnImageFile.name;
+    var filename = path.split("/").pop();
+    var url = URL.createObjectURL(currentAnImageFile);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    showToast("تم تنزيل الصورة — ارفعها لمجلد assets/images/announcements");
+  }
+
+  function saveAnnouncementFromForm(e) {
+    e.preventDefault();
+    var text = $("anFldText").value.trim();
+    if (!text) { showToast("اكتب نص الإعلان أولاً"); return; }
+
+    var id = editingAnnouncementId || generateAnnouncementId(state.announcements);
+    var data = {
+      id: id,
+      text: text,
+      emoji: $("anFldEmoji").value.trim(),
+      image: $("anFldImagePath").value.trim(),
+      link: $("anFldLink").value.trim(),
+      enabled: $("anFldEnabled").checked
+    };
+
+    if (editingAnnouncementId) {
+      var idx = state.announcements.findIndex(function (a) { return a.id === editingAnnouncementId; });
+      if (idx !== -1) state.announcements[idx] = data; else state.announcements.push(data);
+    } else {
+      state.announcements.push(data);
+    }
+
+    saveDraft();
+    renderAnnouncementsList();
+    renderAnnouncePreview();
+    closeAnnouncementModalFn();
+    showToast(editingAnnouncementId ? "تم تحديث الإعلان" : "تمت إضافة الإعلان");
+  }
+
+  // ------------------------------------------------------------------
   // الإعدادات
   // ------------------------------------------------------------------
   function renderSettingsForm() {
@@ -1072,12 +1325,63 @@
     showToast("تم تنزيل config.js — ارفعه في assets/js");
   }
 
+  function serializeAnnouncements() {
+    var s = state.announceSettings || {};
+    var items = state.announcements || [];
+    var lines = [];
+    lines.push("/* ==========================================================================");
+    lines.push("   بيانات الشريط الإعلاني");
+    lines.push("   ==========================================================================");
+    lines.push("   تم إنشاء/تحديث هذا الملف بواسطة لوحة تحكم خشبيكو (admin/index.html).");
+    lines.push("   ========================================================================== */");
+    lines.push("");
+    lines.push("const ANNOUNCEMENT_BAR = {");
+    lines.push("  enabled: " + (s.enabled === false ? "false" : "true") + ",");
+    lines.push("  mode: " + JSON.stringify(s.mode || "animated") + ",");
+    lines.push("  direction: " + JSON.stringify(s.direction || "rtl") + ",");
+    lines.push("  staticAlign: " + JSON.stringify(s.staticAlign || "center") + ",");
+    lines.push("  speed: " + JSON.stringify(s.speed || "medium") + ",");
+    lines.push("  customSpeed: " + (Number(s.customSpeed) || 60) + ",");
+    lines.push("  bgColor: " + JSON.stringify(s.bgColor || "#3E2723") + ",");
+    lines.push("  textColor: " + JSON.stringify(s.textColor || "#FFFDF9") + ",");
+    lines.push("  accentColor: " + JSON.stringify(s.accentColor || "#C9A876") + ",");
+    lines.push("  textSize: " + (Number(s.textSize) || 14) + ",");
+    lines.push("  textWeight: " + JSON.stringify(s.textWeight || "normal") + ",");
+    lines.push("  emojiSize: " + (Number(s.emojiSize) || 16) + ",");
+    lines.push("  imageSize: " + (Number(s.imageSize) || 20) + ",");
+    lines.push("  borderRadius: " + (s.borderRadius != null ? Number(s.borderRadius) : 0));
+    lines.push("};");
+    lines.push("");
+    lines.push("const ANNOUNCEMENTS = [");
+    items.forEach(function (a, i) {
+      var comma = i < items.length - 1 ? "," : "";
+      lines.push(
+        "  { id: " + JSON.stringify(a.id) +
+        ", text: " + JSON.stringify(a.text) +
+        ", emoji: " + JSON.stringify(a.emoji || "") +
+        ", image: " + JSON.stringify(a.image || "") +
+        ", link: " + JSON.stringify(a.link || "") +
+        ", enabled: " + (a.enabled === false ? "false" : "true") + " }" + comma
+      );
+    });
+    lines.push("];");
+    lines.push("");
+    return lines.join("\n");
+  }
+
+  function exportAnnouncementsFile() {
+    downloadTextFile("announcements-data.js", serializeAnnouncements());
+    showToast("تم تنزيل announcements-data.js — ارفعه في assets/js");
+  }
+
   // ------------------------------------------------------------------
   // تهيئة عامة
   // ------------------------------------------------------------------
   function renderAll() {
     renderProductsTable();
     renderCategoriesTable();
+    renderAnnounceSettingsForm();
+    renderAnnouncementsList();
     renderSettingsForm();
     updateDraftStatus();
   }
@@ -1140,6 +1444,34 @@
     var categoryForm = $("categoryForm");
     if (categoryForm) categoryForm.addEventListener("submit", saveCategoryFromForm);
 
+    var addAnnouncementBtn = $("addAnnouncementBtn");
+    if (addAnnouncementBtn) addAnnouncementBtn.addEventListener("click", function () { openAnnouncementModal(null); });
+    var closeAnnouncementModalBtn = $("closeAnnouncementModal");
+    if (closeAnnouncementModalBtn) closeAnnouncementModalBtn.addEventListener("click", closeAnnouncementModalFn);
+    var cancelAnnouncementBtn = $("cancelAnnouncementBtn");
+    if (cancelAnnouncementBtn) cancelAnnouncementBtn.addEventListener("click", closeAnnouncementModalFn);
+    var announcementForm = $("announcementForm");
+    if (announcementForm) announcementForm.addEventListener("submit", saveAnnouncementFromForm);
+    var anFldImageFile = $("anFldImageFile");
+    if (anFldImageFile) anFldImageFile.addEventListener("change", handleAnImageFileChange);
+    var anDownloadImageBtn = $("anDownloadImageBtn");
+    if (anDownloadImageBtn) anDownloadImageBtn.addEventListener("click", downloadAnImage);
+
+    var announceSettingsForm = $("announceSettingsForm");
+    if (announceSettingsForm) announceSettingsForm.addEventListener("submit", saveAnnounceSettingsForm);
+    var anMode = $("anMode");
+    if (anMode) anMode.addEventListener("change", function () { updateAnnounceConditionalFields(); renderAnnouncePreview(); });
+    var anSpeed = $("anSpeed");
+    if (anSpeed) anSpeed.addEventListener("change", function () { updateAnnounceConditionalFields(); renderAnnouncePreview(); });
+    ["anEnabled", "anDirection", "anAlign", "anTextWeight"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.addEventListener("change", renderAnnouncePreview);
+    });
+    ["anCustomSpeed", "anBgColor", "anTextColor", "anAccentColor", "anRadius", "anTextSize", "anEmojiSize", "anImageSize"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.addEventListener("input", renderAnnouncePreview);
+    });
+
     var adminModalOverlay = $("adminModalOverlay");
     if (adminModalOverlay) adminModalOverlay.addEventListener("click", closeAnyOpenModal);
 
@@ -1150,6 +1482,8 @@
     if (exportProductsBtn) exportProductsBtn.addEventListener("click", exportProductsFile);
     var exportConfigBtn = $("exportConfigBtn");
     if (exportConfigBtn) exportConfigBtn.addEventListener("click", exportConfigFile);
+    var exportAnnouncementsBtn = $("exportAnnouncementsBtn");
+    if (exportAnnouncementsBtn) exportAnnouncementsBtn.addEventListener("click", exportAnnouncementsFile);
     var resetDraftBtn = $("resetDraftBtn");
     if (resetDraftBtn) resetDraftBtn.addEventListener("click", resetDraft);
 
