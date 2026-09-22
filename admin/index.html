@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/style.css?v=6">
 <link rel="stylesheet" href="assets/admin.css">
 </head>
 <body class="admin-body">
@@ -49,6 +49,7 @@
     <nav class="admin-tabs" id="adminTabs">
       <button type="button" class="admin-tab active" data-tab="products">المنتجات</button>
       <button type="button" class="admin-tab" data-tab="categories">الفئات</button>
+      <button type="button" class="admin-tab" data-tab="announce">الشريط الإعلاني</button>
       <button type="button" class="admin-tab" data-tab="settings">الإعدادات</button>
       <button type="button" class="admin-tab" data-tab="export">الحفظ والتصدير</button>
     </nav>
@@ -105,7 +106,6 @@
           </table>
         </div>
       </section>
-
 
       <!-- ===== تبويب الشريط الإعلاني ===== -->
       <section class="admin-panel" id="panelAnnounce">
@@ -228,7 +228,7 @@
         </div>
         <div class="announcements-list" id="announcementsList"></div>
       </section>
-      
+
       <!-- ===== تبويب الإعدادات ===== -->
       <section class="admin-panel" id="panelSettings">
         <p class="panel-hint">هذه الإعدادات تتحكم في رقم الواتساب، العملة، وبيانات التواصل الظاهرة في كل الموقع.</p>
@@ -485,7 +485,7 @@
   </div>
 </div>
 
-  <!-- ===== نافذة إضافة/تعديل إعلان ===== -->
+<!-- ===== نافذة إضافة/تعديل إعلان ===== -->
 <div class="admin-modal" id="announcementModal" role="dialog" aria-modal="true" aria-labelledby="announcementModalTitle">
   <div class="admin-modal-header">
     <h3 id="announcementModalTitle">إضافة إعلان</h3>
@@ -555,3 +555,4 @@
 <script src="assets/admin.js"></script>
 </body>
 </html>
+
