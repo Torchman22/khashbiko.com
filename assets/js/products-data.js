@@ -12,6 +12,8 @@ const PRODUCT_CATEGORIES = [
   { id: "office", label: "المكتب", icon: "office" }
 ];
 
+/*تاكد من كتابة اسم المجلد الذي يحوي الصورة وكذلك اسم الصورة بشكل صحيح كي تظهر بلا مشاكل*/
+
 const PRODUCTS = [
   {
     id: "p001",
