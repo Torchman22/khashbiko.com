@@ -106,6 +106,129 @@
         </div>
       </section>
 
+
+      <!-- ===== تبويب الشريط الإعلاني ===== -->
+      <section class="admin-panel" id="panelAnnounce">
+        <p class="panel-hint">شريط رسائل قصيرة (عروض، إشعارات) يظهر أعلى الموقع تحت الهيدر مباشرة.</p>
+
+        <div class="announce-preview-wrap">
+          <p class="live-preview-label">معاينة مباشرة</p>
+          <div class="announce-bar" id="previewAnnounceBar" hidden>
+            <div class="announce-inner">
+              <div class="announce-viewport">
+                <div class="announce-track" id="previewAnnounceTrack"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="admin-form settings-form" id="announceSettingsForm">
+          <label class="toggle-row">
+            <span>إظهار الشريط الإعلاني</span>
+            <span class="toggle-switch">
+              <input type="checkbox" id="anEnabled" checked>
+              <span class="toggle-slider"></span>
+            </span>
+          </label>
+
+          <div class="form-row">
+            <label>
+              نوع العرض
+              <select id="anMode">
+                <option value="animated">متحرك</option>
+                <option value="static">ثابت (يتبدل كل فترة)</option>
+              </select>
+            </label>
+            <label id="anDirectionWrap">
+              اتجاه الحركة
+              <select id="anDirection">
+                <option value="rtl">من اليمين إلى اليسار</option>
+                <option value="ltr">من اليسار إلى اليمين</option>
+              </select>
+            </label>
+            <label id="anAlignWrap" hidden>
+              مكان ظهور الإعلان
+              <select id="anAlign">
+                <option value="start">البداية (يمين)</option>
+                <option value="center">المنتصف</option>
+                <option value="end">النهاية (يسار)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label id="anSpeedWrap">
+              سرعة الحركة
+              <select id="anSpeed">
+                <option value="slow">بطيئة</option>
+                <option value="medium">متوسطة</option>
+                <option value="fast">سريعة</option>
+                <option value="custom">مخصصة</option>
+              </select>
+            </label>
+            <label id="anCustomSpeedWrap" hidden>
+              سرعة مخصصة (بكسل/ثانية)
+              <input type="number" id="anCustomSpeed" min="5" step="5" value="60">
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label>
+              لون الخلفية
+              <input type="color" id="anBgColor" value="#3E2723">
+            </label>
+            <label>
+              لون النص
+              <input type="color" id="anTextColor" value="#FFFDF9">
+            </label>
+          </div>
+          <div class="form-row">
+            <label>
+              لون العناصر (الإيموجي وغيره)
+              <input type="color" id="anAccentColor" value="#C9A876">
+            </label>
+            <label>
+              استدارة الحواف (بكسل)
+              <input type="number" id="anRadius" min="0" max="999" value="999">
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label>
+              حجم النص (بكسل)
+              <input type="number" id="anTextSize" min="10" max="24" value="14">
+            </label>
+            <label>
+              وزن النص
+              <select id="anTextWeight">
+                <option value="normal">عادي</option>
+                <option value="bold">عريض</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-row">
+            <label>
+              حجم الإيموجي (بكسل)
+              <input type="number" id="anEmojiSize" min="10" max="32" value="16">
+            </label>
+            <label>
+              حجم الصورة (بكسل)
+              <input type="number" id="anImageSize" min="10" max="60" value="20">
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">حفظ إعدادات الشريط</button>
+        </form>
+
+        <hr class="field-divider">
+
+        <div class="panel-toolbar">
+          <p class="panel-hint">الرسائل اللي بتظهر جوا الشريط، بترتيب ظهورها.</p>
+          <button type="button" class="btn btn-primary" id="addAnnouncementBtn">+ إضافة إعلان</button>
+        </div>
+        <div class="announcements-list" id="announcementsList"></div>
+      </section>
+      
       <!-- ===== تبويب الإعدادات ===== -->
       <section class="admin-panel" id="panelSettings">
         <p class="panel-hint">هذه الإعدادات تتحكم في رقم الواتساب، العملة، وبيانات التواصل الظاهرة في كل الموقع.</p>
@@ -175,6 +298,11 @@
             <h4>2) ملف الإعدادات</h4>
             <p>رقم الواتساب، العملة، بيانات التواصل وروابط السوشيال ميديا.</p>
             <button type="button" class="btn btn-primary btn-block" id="exportConfigBtn">⬇ تنزيل config.js</button>
+          </div>
+          <div class="export-card">
+            <h4>3) ملف الشريط الإعلاني</h4>
+            <p>إعدادات الشريط الإعلاني وكل الإعلانات المضافة.</p>
+            <button type="button" class="btn btn-primary btn-block" id="exportAnnouncementsBtn">⬇ تنزيل announcements-data.js</button>
           </div>
         </div>
 
@@ -357,6 +485,63 @@
   </div>
 </div>
 
+  <!-- ===== نافذة إضافة/تعديل إعلان ===== -->
+<div class="admin-modal" id="announcementModal" role="dialog" aria-modal="true" aria-labelledby="announcementModalTitle">
+  <div class="admin-modal-header">
+    <h3 id="announcementModalTitle">إضافة إعلان</h3>
+    <button type="button" class="icon-btn" id="closeAnnouncementModal" aria-label="إغلاق">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="admin-modal-body">
+    <form class="admin-form" id="announcementForm">
+      <input type="hidden" id="anFldId">
+      <label>
+        نص الإعلان
+        <input type="text" id="anFldText" required placeholder="مثال: عروض خاصة لفترة محدودة">
+      </label>
+      <div class="form-row">
+        <label>
+          إيموجي (اختياري)
+          <input type="text" id="anFldEmoji" placeholder="🎉" maxlength="4">
+        </label>
+        <label>
+          رابط عند الضغط (اختياري)
+          <input type="text" id="anFldLink" placeholder="index.html#products" dir="ltr">
+        </label>
+      </div>
+
+      <label>
+        صورة صغيرة (اختياري)
+        <input type="file" id="anFldImageFile" accept="image/*">
+      </label>
+      <div class="image-tools" id="anImageTools" hidden>
+        <img id="anImagePreview" class="image-preview" alt="معاينة الصورة">
+        <div class="image-tools-actions">
+          <button type="button" class="btn btn-small" id="anDownloadImageBtn">⬇ تنزيل الصورة بالاسم الصحيح</button>
+          <span class="field-hint">ارفعها لمجلد <code>assets/images/announcements</code> بعد التنزيل.</span>
+        </div>
+      </div>
+      <label>
+        مسار الصورة
+        <input type="text" id="anFldImagePath" placeholder="assets/images/announcements/a1.jpg" dir="ltr">
+      </label>
+
+      <label class="toggle-row">
+        <span>الإعلان مفعّل</span>
+        <span class="toggle-switch">
+          <input type="checkbox" id="anFldEnabled" checked>
+          <span class="toggle-slider"></span>
+        </span>
+      </label>
+    </form>
+  </div>
+  <div class="admin-modal-footer">
+    <button type="button" class="btn btn-ghost" id="cancelAnnouncementBtn">إلغاء</button>
+    <button type="submit" form="announcementForm" class="btn btn-primary">حفظ الإعلان</button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -364,6 +549,8 @@
 <script src="../assets/js/icons.js"></script>
 <script src="../assets/js/media-utils.js"></script>
 <script src="../assets/js/products-data.js"></script>
+<script src="../assets/js/announcements-data.js"></script>
+<script src="../assets/js/announcement-bar.js"></script>
 <script src="assets/admin-config.js"></script>
 <script src="assets/admin.js"></script>
 </body>
