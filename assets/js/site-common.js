@@ -311,4 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
   applyConfig();
   renderCart();
   initCommonEvents();
+  if (typeof AnnouncementBar !== "undefined") {
+    AnnouncementBar.render("announceBar", "announceTrack");
+  }
 });
