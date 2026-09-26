@@ -122,11 +122,29 @@
     <div class="pd-layout">
       <!-- معرض الصور -->
       <div class="pd-gallery">
-        <button type="button" class="pd-main-image" id="pdMainImageBtn" aria-label="تكبير الصورة">                                            
+        <button type="button" class="pd-main-image" id="pdMainImageBtn" aria-label="عرض الوسائط">
         <img id="pdMainImg" class="pd-main-img" alt="" hidden>
-        <video id="pdMainVideo" class="pd-main-video" controls playsinline hidden></video>
+      
+        <video
+          id="pdMainVideo"
+          class="pd-main-video"
+          controls
+          playsinline
+          preload="metadata"
+          hidden>
+        </video>
+      
+        <iframe
+          id="pdMainYoutube"
+          class="pd-main-youtube"
+          title="فيديو المنتج"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          hidden>
+        </iframe>
+      
         <div class="pd-main-icon" id="pdMainIcon"></div>
-        </button>                                                                                                                             
+      </button>                                                                                                                      
         <div class="pd-thumbs" id="pdThumbs"></div>
       </div>
 
