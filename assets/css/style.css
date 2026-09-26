@@ -608,47 +608,104 @@ body.modal-open .quick-view-modal{opacity:1;pointer-events:auto;transform:transl
 .pd-spec-row dd{margin:0;font-weight:700;color:var(--ink);font-size:.88rem;}
 
 /* التقييمات */
+
 .pd-reviews-empty{
   background:var(--white);border:1px dashed var(--paper-2);border-radius:var(--radius);
   padding:36px 20px;text-align:center;max-width:480px;
 }
+
 .pd-reviews-empty p{margin:0 0 4px;color:var(--ink);}
+
 .pd-reviews-empty-sub{color:var(--ink-soft) !important;font-size:.85rem;}
+
 .pd-reviews-summary{
   display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:20px;
   border-bottom:1px solid var(--paper-2);flex-wrap:wrap;
 }
+
 .pd-stars-lg{color:var(--gold);font-size:1.5rem;letter-spacing:3px;}
+
 .pd-rating-avg{font-family:'El Messiri',serif;font-size:1.6rem;font-weight:700;color:var(--walnut);}
+
 .pd-reviews-list{display:grid;gap:20px;max-width:680px;}
+
 .pd-review-item{background:var(--white);border-radius:var(--radius-sm);padding:18px 20px;box-shadow:0 2px 10px rgba(42,27,24,.05);}
+
 .pd-review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+
 .pd-review-name{font-weight:700;color:var(--ink);}
+
 .pd-review-date{color:var(--ink-soft);font-size:.78rem;}
+
 .pd-review-stars{color:var(--gold);letter-spacing:2px;display:block;margin-bottom:8px;}
+
 .pd-review-comment{margin:0;font-size:.92rem;}
+
 .pd-review-pending-badge{
   display:inline-block;background:var(--gold);color:var(--walnut-deep);
   font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;margin-inline-start:8px;
 }
+
 .pd-review-item.is-pending{border:1px dashed var(--oak);box-shadow:none;}
+
 .pd-review-delete{
   background:none;border:none;color:var(--ink-soft);font-size:.78rem;cursor:pointer;
   text-decoration:underline;padding:0;margin-top:6px;
 }
+
 .pd-review-delete:hover{color:var(--rust);}
 
 /* فورم إضافة تقييم */
+
 .review-form-wrap{
   max-width:560px;margin-top:32px;padding-top:28px;border-top:1px solid var(--paper-2);
 }
+
 .review-form-wrap h3{font-size:1.05rem;margin-bottom:16px;}
+
+/* تحسين حقول الإدخال */
+.review-form-wrap input[type="text"],
+.review-form-wrap textarea{
+  width:100%;
+  padding:14px 16px;
+  font-size:.95rem;
+  font-family:inherit;
+  line-height:1.6;
+  color:var(--ink);
+  background:var(--white);
+  border:1px solid var(--paper-2);
+  border-radius:10px;
+  outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+  box-sizing:border-box;
+}
+
+.review-form-wrap input[type="text"]:focus,
+.review-form-wrap textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(201,162,77,.12);
+}
+
+.review-form-wrap input[type="text"]::placeholder,
+.review-form-wrap textarea::placeholder{
+  color:var(--ink-soft);
+  opacity:.7;
+}
+
+.review-form-wrap textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
 .star-picker{display:inline-flex;gap:4px;}
+
 .star-btn{
   background:none;border:none;cursor:pointer;font-size:1.8rem;line-height:1;padding:2px;
   color:var(--paper-2);transition:color .1s ease, transform .1s ease;
 }
+
 .star-btn:hover,.star-btn.active{color:var(--gold);}
+
 .star-btn:active{transform:scale(1.15);}
 
 /* منتجات مشابهة */
