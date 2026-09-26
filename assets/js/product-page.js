@@ -39,73 +39,163 @@
   // ------------------------------------------------------------------
   // معرض الصور
   // ------------------------------------------------------------------
-  function renderGallery(product) {
-    galleryImages = [product.image].concat(product.images || []).filter(Boolean);
-    setMainImage(0);
-    renderThumbs();
+   function renderGallery(product) {                                                                             /*start */
+  galleryImages = [product.image]
+    .concat(product.images || [])
+    .filter(Boolean);
+
+  // إضافة الفيديو في نهاية المعرض
+  if (product.video) {
+    galleryImages.push({
+      type: "video",
+      src: product.video
+    });
   }
 
-  function setMainImage(index) {
-    galleryIndex = index;
-    var img = document.getElementById("pdMainImg");
-    var iconWrap = document.getElementById("pdMainIcon");
-    var src = galleryImages[index];
+  setMainImage(0);
+  renderThumbs();
+}                                                                                                               
 
-    iconWrap.innerHTML = safeIcon(currentProduct.icon, 90);
+ function setMainImage(index) {
+  galleryIndex = index;
+
+  var img = document.getElementById("pdMainImg");
+  var video = document.getElementById("pdMainVideo");
+  var iconWrap = document.getElementById("pdMainIcon");
+
+  var item = galleryImages[index];
+
+  // إخفاء العناصر أولًا
+  img.hidden = true;
+  video.hidden = true;
+  iconWrap.hidden = true;
+
+  // إذا كان العنصر فيديو
+  if (item && typeof item === "object" && item.type === "video") {
+  var videoContainer = document.getElementById("pdVideoContainer");
+  var playOverlay = document.getElementById("pdVideoPlayOverlay");
+
+  video.src = item.src;
+  video.hidden = false;
+  videoContainer.hidden = false;
+  video.load();
+
+  // إظهار زر التشغيل عند اختيار الفيديو
+  playOverlay.hidden = false;
+  playOverlay.classList.remove("is-playing");
+}
+   else {
+    // إذا كان العنصر صورة
+    var src = item;
 
     if (src) {
       img.src = src;
       img.alt = currentProduct.name;
       img.hidden = false;
-      iconWrap.hidden = true;
+
       img.onerror = function () {
         img.hidden = true;
+        iconWrap.innerHTML = safeIcon(currentProduct.icon, 90);
         iconWrap.hidden = false;
       };
     } else {
-      img.hidden = true;
+      iconWrap.innerHTML = safeIcon(currentProduct.icon, 90);
       iconWrap.hidden = false;
     }
-
-    document.querySelectorAll(".pd-thumb").forEach(function (t, i) {
-      t.classList.toggle("active", i === index);
-    });
   }
 
-  function renderThumbs() {
-    var wrap = document.getElementById("pdThumbs");
-    if (galleryImages.length <= 1) {
-      wrap.innerHTML = "";
-      wrap.hidden = true;
-      return;
-    }
-    wrap.hidden = false;
-    wrap.innerHTML = galleryImages.map(function (src, i) {
-      return '<button type="button" class="pd-thumb' + (i === 0 ? " active" : "") + '" data-index="' + i + '"><img src="' + src + '" alt=""></button>';
-    }).join("");
+  // تحديد العنصر النشط
+  document.querySelectorAll(".pd-thumb").forEach(function (t, i) {
+    t.classList.toggle("active", i === index);
+  });
+}                                                                                                               
 
-    wrap.querySelectorAll(".pd-thumb").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        setMainImage(parseInt(btn.dataset.index, 10));
-      });
-      var img = btn.querySelector("img");
+function renderThumbs() {
+  var wrap = document.getElementById("pdThumbs");
+
+  if (galleryImages.length <= 1) {
+    wrap.innerHTML = "";
+    wrap.hidden = true;
+    return;
+  }
+
+  wrap.hidden = false;
+
+  wrap.innerHTML = galleryImages.map(function (item, i) {
+
+    // صورة مصغرة للفيديو
+    if (item && typeof item === "object" && item.type === "video") {
+      return `
+        <button type="button"
+                class="pd-thumb pd-video-thumb${i === 0 ? " active" : ""}"
+                data-index="${i}"
+                aria-label="عرض الفيديو">
+
+          <div class="pd-video-thumb-inner">
+            <span class="pd-video-play">▶</span>
+            <span class="pd-video-text">فيديو</span>
+          </div>
+
+        </button>
+      `;
+    }
+
+    // صورة عادية
+    return `
+      <button type="button"
+              class="pd-thumb${i === 0 ? " active" : ""}"
+              data-index="${i}">
+
+        <img src="${item}" alt="">
+
+      </button>
+    `;
+
+  }).join("");
+
+  wrap.querySelectorAll(".pd-thumb").forEach(function (btn) {
+
+    btn.addEventListener("click", function () {
+      setMainImage(parseInt(btn.dataset.index, 10));
+    });
+
+    var img = btn.querySelector("img");
+
+    if (img) {
       img.addEventListener("error", function () {
         btn.style.display = "none";
       });
-    });
+    }
+
+  });
+}                                                                                              
+
+ function openLightbox() {
+  var item = galleryImages[galleryIndex];
+
+  // لا تفتح الـ Lightbox إذا كان العنصر فيديو
+  if (!item || (typeof item === "object" && item.type === "video")) {
+    return;
   }
 
-  function openLightbox() {
-    var src = galleryImages[galleryIndex];
-    if (!src) return; // مفيش صورة حقيقية للتكبير، بس أيقونة بديلة
-    document.getElementById("pdLightboxImg").src = src;
-    document.body.classList.add("modal-open");
-    lockOrUnlockScroll();
+  document.getElementById("pdLightboxImg").src = item;
+  document.body.classList.add("modal-open");
+  lockOrUnlockScroll();
+}
+
+function closeLightbox() {
+  var lightboxOverlay = document.getElementById("lightboxOverlay");
+
+  if (lightboxOverlay) {
+    lightboxOverlay.classList.remove("active");
   }
-  function closeLightbox() {
-    document.body.classList.remove("modal-open");
-    lockOrUnlockScroll();
-  }
+
+  document.body.classList.remove("modal-open");
+
+  lockOrUnlockScroll();
+}
+
+                                                                                                                    /*end */
 
   // ------------------------------------------------------------------
   // السعر والتوفر
