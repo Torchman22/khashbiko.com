@@ -39,12 +39,12 @@
   // ------------------------------------------------------------------
   // معرض الصور
   // ------------------------------------------------------------------
-   function renderGallery(product) {                                                                             /*start */
+  function renderGallery(product) {
   galleryImages = [product.image]
     .concat(product.images || [])
     .filter(Boolean);
 
-  // إضافة الفيديو في نهاية المعرض
+  // إضافة الفيديو في نهاية الصور
   if (product.video) {
     galleryImages.push({
       type: "video",
@@ -54,38 +54,101 @@
 
   setMainImage(0);
   renderThumbs();
-}                                                                                                               
+}
+
+function getYouTubeEmbedUrl(url) {
+  if (!url || typeof url !== "string") return null;
+
+  try {
+    var parsed = new URL(url);
+    var host = parsed.hostname.replace("www.", "").toLowerCase();
+
+    // youtube.com/watch?v=VIDEO_ID
+    if (host === "youtube.com" || host === "m.youtube.com") {
+      var videoId = parsed.searchParams.get("v");
+
+      // youtube.com/shorts/VIDEO_ID
+      if (!videoId) {
+        var shortsMatch = parsed.pathname.match(/^\/shorts\/([^/?]+)/);
+        if (shortsMatch) {
+          videoId = shortsMatch[1];
+        }
+      }
+
+      if (videoId) {
+        return "https://www.youtube.com/embed/" + videoId;
+      }
+    }
+
+    // youtu.be/VIDEO_ID
+    if (host === "youtu.be") {
+      var id = parsed.pathname.split("/").filter(Boolean)[0];
+
+      if (id) {
+        return "https://www.youtube.com/embed/" + id;
+      }
+    }
+
+    // إذا كان بالفعل embed
+    if (host === "youtube.com" && parsed.pathname.indexOf("/embed/") === 0) {
+      return url;
+    }
+
+  } catch (error) {
+    return null;
+  }
+
+  return null;
+}
 
  function setMainImage(index) {
   galleryIndex = index;
 
   var img = document.getElementById("pdMainImg");
   var video = document.getElementById("pdMainVideo");
+  var youtube = document.getElementById("pdMainYoutube");
   var iconWrap = document.getElementById("pdMainIcon");
 
   var item = galleryImages[index];
 
-  // إخفاء العناصر أولًا
+  // إخفاء كل الوسائط أولًا
   img.hidden = true;
   video.hidden = true;
+  youtube.hidden = true;
   iconWrap.hidden = true;
 
-  // إذا كان العنصر فيديو
-  if (item && typeof item === "object" && item.type === "video") {
-  var videoContainer = document.getElementById("pdVideoContainer");
-  var playOverlay = document.getElementById("pdVideoPlayOverlay");
-
-  video.src = item.src;
-  video.hidden = false;
-  videoContainer.hidden = false;
+  // إيقاف الفيديو المحلي عند الانتقال لعنصر آخر
+  video.pause();
+  video.removeAttribute("src");
   video.load();
 
-  // إظهار زر التشغيل عند اختيار الفيديو
-  playOverlay.hidden = false;
-  playOverlay.classList.remove("is-playing");
-}
-   else {
-    // إذا كان العنصر صورة
+  // إزالة فيديو YouTube السابق
+  youtube.src = "";
+
+  // -----------------------------
+  // فيديو
+  // -----------------------------
+  if (item && typeof item === "object" && item.type === "video") {
+
+    var youtubeUrl = getYouTubeEmbedUrl(item.src);
+
+    // YouTube
+    if (youtubeUrl) {
+      youtube.src = youtubeUrl;
+      youtube.hidden = false;
+
+    // فيديو محلي MP4 / WebM / إلخ
+    } else {
+      video.src = item.src;
+      video.hidden = false;
+      video.load();
+    }
+
+  // -----------------------------
+  // صورة
+  // -----------------------------
+  } else {
+
     var src = item;
 
     if (src) {
@@ -98,17 +161,18 @@
         iconWrap.innerHTML = safeIcon(currentProduct.icon, 90);
         iconWrap.hidden = false;
       };
+
     } else {
       iconWrap.innerHTML = safeIcon(currentProduct.icon, 90);
       iconWrap.hidden = false;
     }
   }
 
-  // تحديد العنصر النشط
+  // العنصر النشط
   document.querySelectorAll(".pd-thumb").forEach(function (t, i) {
     t.classList.toggle("active", i === index);
   });
-}                                                                                                               
+}                                                                                        
 
 function renderThumbs() {
   var wrap = document.getElementById("pdThumbs");
@@ -123,13 +187,14 @@ function renderThumbs() {
 
   wrap.innerHTML = galleryImages.map(function (item, i) {
 
-    // صورة مصغرة للفيديو
+    // فيديو
     if (item && typeof item === "object" && item.type === "video") {
       return `
-        <button type="button"
-                class="pd-thumb pd-video-thumb${i === 0 ? " active" : ""}"
-                data-index="${i}"
-                aria-label="عرض الفيديو">
+        <button
+          type="button"
+          class="pd-thumb pd-video-thumb${i === 0 ? " active" : ""}"
+          data-index="${i}"
+          aria-label="عرض فيديو المنتج">
 
           <div class="pd-video-thumb-inner">
             <span class="pd-video-play">▶</span>
@@ -140,11 +205,12 @@ function renderThumbs() {
       `;
     }
 
-    // صورة عادية
+    // صورة
     return `
-      <button type="button"
-              class="pd-thumb${i === 0 ? " active" : ""}"
-              data-index="${i}">
+      <button
+        type="button"
+        class="pd-thumb${i === 0 ? " active" : ""}"
+        data-index="${i}">
 
         <img src="${item}" alt="">
 
@@ -168,7 +234,7 @@ function renderThumbs() {
     }
 
   });
-}                                                                                              
+}                                                                                       
 
  function openLightbox() {
   var item = galleryImages[galleryIndex];
@@ -194,8 +260,6 @@ function closeLightbox() {
 
   lockOrUnlockScroll();
 }
-
-                                                                                                                    /*end */
 
   // ------------------------------------------------------------------
   // السعر والتوفر
