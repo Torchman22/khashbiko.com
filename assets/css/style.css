@@ -1023,3 +1023,44 @@ body.modal-open .pd-lightbox{opacity:1;pointer-events:auto;}
   font-size: 12px;
   font-weight: 700;
 }
+
+/*التعديلات على الصورة الرئيسية في الصفحة الاساسية hero image*/
+.hero-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 5;
+  overflow: hidden;
+}
+
+.hero-banner img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-rings {
+  z-index: -1;
+}
+
+/* مساحة مناسبة للصورة الأفقية على الشاشات الكبيرة */
+.hero {
+  min-height: clamp(60px, 72vh, 70px);
+}
+
+/* الهاتف: قص الصورة بشكل متوازن مع بقاء النص واضحًا */
+@media (max-width: 700px) {
+  .hero {
+    min-height: 650px;
+  }
+
+  .hero-banner img {
+    object-position: 55% center;
+  }
+
+  .hero-banner-overlay {
+    background:
+      linear-gradient(180deg, rgba(20,14,10,.45) 0%, rgba(20,14,10,.68) 55%, rgba(20,14,10,.88) 100%);
+  }
+}
