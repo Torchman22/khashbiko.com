@@ -6,7 +6,7 @@
 
 const SITE_CONFIG = {
   whatsappNumber: "201037887442",
-  currency: "SAR",
+  currency: "ج.م",
   phone: "+20 103 788 7442",
   email: "ahmedtorchman@gmail.com",
   address: "المنصورة، مصر",
