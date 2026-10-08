@@ -22,7 +22,7 @@ const PRODUCTS = [
     description: "حامل كتب من الخشب اقرء بمتعة ✨\nلو نفسك تطور من طرق مزاكرتك فحامل الكتب هو الاختيار الانسب\nبمجرد حصولك عليه ستستمتع بوقت قراءتك.\nمميزاته:\n    • يزيد التركيز \n    • يجعل المزاكرة صحية لانه يفرد الرقبة والظهر\n    • يزيد من وقت المزاكرة والقراءة ويقلل الصداع \nاحسن هدية لابنك عشان يحب المزاكرة ويزاكر بشكل افضل وصحي اكتر \nمساحة سطح الحامل : 38سم & 38سم (مساحة مناسبة لاي كتاب او كراسة)\nمن دلوقتي وقت مذاكرتك هيزيد أضعاف 💪\nكمان تقدر تحدد الزاوية اللي تناسبك عشان تقعد على راحتك\nوبعد ما تخلص، تقدر تطبقه وتحطه في درج المكتب ⏱️\nمع حامل الكتب اقرأ بمتعة وتركيز، وكمان ينفع للابتوب 👍",
     image: "assets/images/products/book_stand/ChatGPT Image Oct 8, 2026, 07_11_10 AM_compressed.webp",
     video: "https://youtube.com/shorts/TB3l3VyXR6Y?si=IciJLUCOxEBEoRcr",
-    images: ["assets/images/products/book_stand/1.webp","assets/images/products/book_stand/2.webp","assets/images/products/book_stand/3.png","assets/images/products/book_stand/4.png"],
+    images: ["assets/images/products/book_stand/1.webp","assets/images/products/book_stand/2.webp","assets/images/products/book_stand/Adjustable Wooden Book Stand Collage_compressed.webp","assets/images/products/book_stand/4.png"],
     specs: [{"label":"اللون","value":"بني غامق"},{"label":"الخامة","value":"خشب ابيض"}],
     reviews: [
   {"name":"محمد علي","rating":5,"comment":"جميل جدا ما شاء الله، والخشب شكله كويس","date":"2026-07-14"},
