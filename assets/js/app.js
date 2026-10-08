@@ -105,10 +105,6 @@
       badgeHtml = '<span class="badge">' + product.badge + "</span>";
     }
 
-    var videoBadgeHtml = product.video
-      ? '<button type="button" class="video-badge" data-id="' + product.id + '" aria-label="مشاهدة فيديو منتج ' + product.name + '">' + safeIcon("play", 14) + "</button>"
-      : "";
-
     var href = "product.html?id=" + encodeURIComponent(product.id);
 
     return (
@@ -122,14 +118,13 @@
             "</div>" +
           "</a>" +
           '<button type="button" class="quick-view-btn" data-id="' + product.id + '" aria-label="عرض سريع لمنتج ' + product.name + '">' + safeIcon("eye", 18) + "</button>" +
-          videoBadgeHtml +
         "</div>" +
         '<div class="product-info">' +
-          '<div class="product-tags">' + productTagsHtml(product) + "</div>" +
           '<h3><a href="' + href + '" class="product-title-link">' + product.name + "</a></h3>" +
           '<p class="product-desc">' + (product.description || "") + "</p>" +
           '<div class="product-row">' +
             '<span class="price-wrap">' + priceHtml + "</span>" +
+            '<div class="product-tags">' + productTagsHtml(product) + "</div>" +
             '<button type="button" class="btn btn-small add-cart" data-id="' + product.id + '"' + (product.inStock === false ? " disabled" : "") + ">" +
               (product.inStock === false ? "غير متوفر" : "أضف للسلة") +
             "</button>" +
@@ -164,11 +159,6 @@
     grid.querySelectorAll(".quick-view-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         openQuickView(btn.dataset.id);
-      });
-    });
-    grid.querySelectorAll(".video-badge").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        openQuickView(btn.dataset.id, "video");
       });
     });
   }
